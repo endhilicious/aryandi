@@ -1,0 +1,407 @@
+---
+alwaysApply: true
+---
+
+# Reusable Breadcrumbs Component Rules
+
+## IMPORTANT: Breadcrumbs Component Usage
+
+**APPLY ONLY WHEN:**
+- Creating any page after root page (not the root page itself)
+- Working with navigation that needs breadcrumbs
+- Implementing page navigation structure
+- Adding new routes that are deeper than root
+
+**DO NOT APPLY WHEN:**
+- Working with root pages (like `/admin`, `/dashboard`)
+- Creating authentication pages (login, register)
+- Working with modal or popup content
+- Creating components that don't need navigation
+
+When creating any page that is **NOT the root page**, **ALWAYS** add breadcrumbs component at the top of the page content (after header, before main content).
+
+### Mandatory Breadcrumbs Component
+
+**Use this component for ALL non-root pages:**
+
+```tsx
+// Option 1: If using path alias (most common)
+import { Breadcrumbs } from '@/components/layouts'
+
+// Option 2: If using relative imports
+import { Breadcrumbs } from './components/layouts'
+import { Breadcrumbs } from '../components/layouts'
+import { Breadcrumbs } from '../../components/layouts'
+
+// Option 3: If using absolute imports from src
+import { Breadcrumbs } from 'src/components/layouts'
+```
+
+### How to Determine Correct Import Path
+
+#### 1. Check tsconfig.json
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],           // Use: @/components/layouts/Breadcrumbs
+      "~/*": ["./src/*"],           // Use: ~/components/layouts/Breadcrumbs
+      "components/*": ["./src/components/*"]  // Use: components/layouts/Breadcrumbs
+    }
+  }
+}
+```
+
+#### 2. Check next.config.js (Next.js projects)
+```javascript
+module.exports = {
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, 'src'),
+    }
+    return config
+  }
+}
+```
+
+### Why Use Breadcrumbs?
+
+1. **Automatic Generation**: Breadcrumbs are automatically generated from current path
+2. **Consistent Navigation**: Uniform breadcrumb behavior across all pages
+3. **User Experience**: Users can easily navigate back to previous pages
+4. **Visual Hierarchy**: Clear indication of current page location
+5. **Responsive Design**: Works well on both desktop and mobile
+6. **No Configuration**: No need to manually configure breadcrumb items
+
+### Core Interface
+
+```tsx
+// Breadcrumbs Props Interface
+interface BreadcrumbsProps {
+  className?: string;
+}
+
+// Breadcrumb Item Interface (generated automatically)
+interface BreadcrumbItem {
+  label: string;
+  href: string;
+  isActive: boolean;
+}
+```
+
+### Implementation Pattern
+
+```tsx
+// Example: Page at /admin/users/123
+export default function UserDetailPage() {
+  return (
+    <div className="space-y-8">
+      {/* Breadcrumbs - ALWAYS at the top after header */}
+      <Breadcrumbs />
+      
+      {/* Main page content */}
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          User Details
+        </h1>
+        {/* Page content */}
+      </div>
+    </div>
+  );
+}
+```
+
+### Automatic Path Generation
+
+The breadcrumbs component automatically:
+
+1. **Extracts path segments** from current URL
+2. **Capitalizes first letter** of each segment
+3. **Creates navigation links** for each segment
+4. **Marks last segment** as active (non-clickable)
+5. **Adds back arrow** for mobile navigation
+
+### Path Examples
+
+| URL | Breadcrumbs Display | Navigation |
+|-----|-------------------|------------|
+| `/admin/users` | ← Admin < Users | Admin → `/admin`, Users (active) |
+| `/admin/users/123` | ← Admin < Users < 123 | Admin → `/admin`, Users → `/admin/users`, 123 (active) |
+| `/dashboard/education` | ← Dashboard < Education | Dashboard → `/dashboard`, Education (active) |
+| `/dashboard/quiz/1` | ← Dashboard < Quiz < 1 | Dashboard → `/dashboard`, Quiz → `/dashboard/quiz`, 1 (active) |
+
+### Page Structure Requirements
+
+**MANDATORY**: All non-root pages MUST follow this structure:
+
+```tsx
+export default function YourPage() {
+  return (
+    <div className="space-y-8">
+      {/* 1. Breadcrumbs - ALWAYS FIRST */}
+      <Breadcrumbs />
+      
+      {/* 2. Page Header (optional) */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
+        <h1 className="text-3xl font-bold text-gray-900">Page Title</h1>
+        <p className="text-lg text-gray-600">Page description</p>
+      </div>
+      
+      {/* 3. Main Content */}
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        {/* Your page content */}
+      </div>
+    </div>
+  );
+}
+```
+
+### Responsive Design Features
+
+1. **Desktop View**: Full breadcrumb trail with clickable links
+2. **Mobile View**: Compact breadcrumb with back arrow
+3. **Touch-Friendly**: Proper touch targets for mobile devices
+4. **Visual Hierarchy**: Clear distinction between active and inactive items
+
+### Styling and Customization
+
+#### 1. Custom Styling
+```tsx
+<Breadcrumbs className="mb-6" />
+```
+
+#### 2. Default Styling
+The component uses Tailwind CSS with these default styles:
+- **Back Arrow**: Left arrow icon from Lucide React
+- **Separator**: `<` symbol between breadcrumb items
+- **Active Item**: Non-clickable, highlighted text
+- **Inactive Items**: Clickable links with hover effects
+- **Responsive**: Adapts to different screen sizes
+
+### What NOT to Do
+
+❌ **Don't create custom breadcrumb implementations**
+❌ **Don't manually configure breadcrumb items**
+❌ **Don't place breadcrumbs inside page content**
+❌ **Don't skip breadcrumbs on non-root pages**
+❌ **Don't use breadcrumbs on root pages**
+❌ **Don't hardcode breadcrumb navigation**
+
+### What TO Do
+
+✅ **Always use Breadcrumbs component**
+✅ **Place breadcrumbs at the top of page content**
+✅ **Use on all non-root pages**
+✅ **Let component auto-generate from path**
+✅ **Follow consistent page structure**
+✅ **Test responsive behavior**
+
+### File Locations
+
+- **Component**: `src/components/layouts/Breadcrumbs.tsx`
+- **Types**: Exported from `Breadcrumbs.tsx`
+- **Dependencies**: `lucide-react` for icons, `next/navigation` for routing
+
+### Component Architecture
+
+```
+Breadcrumbs (Auto-Generated Component)
+├── Back Arrow (Mobile Navigation)
+├── Path Segments (Auto-Generated)
+│   ├── Root Segment (Always clickable)
+│   ├── Middle Segments (Clickable)
+│   └── Current Segment (Active, non-clickable)
+└── Responsive Layout (Desktop/Mobile)
+```
+
+### Page Examples That Need Breadcrumbs
+
+✅ **Admin Pages**:
+- `/admin/users` → ← Admin < Users
+- `/admin/users/123` → ← Admin < Users < 123
+- `/admin/dashboard` → ← Admin < Dashboard
+
+✅ **User Dashboard Pages**:
+- `/dashboard/education` → ← Dashboard < Education
+- `/dashboard/quiz/1` → ← Dashboard < Quiz < 1
+- `/dashboard/risk` → ← Dashboard < Risk
+
+✅ **Any Sub-Page**:
+- `/profile/settings` → ← Profile < Settings
+- `/education/module/1` → ← Education < Module < 1
+
+### Page Examples That DON'T Need Breadcrumbs
+
+❌ **Root Pages**:
+- `/admin` (admin root)
+- `/dashboard` (dashboard root)
+- `/` (app root)
+
+❌ **Authentication Pages**:
+- `/login`
+- `/register`
+- `/auth/verify`
+
+### Integration with Layout
+
+```tsx
+// Layout structure
+<div className="min-h-screen bg-gray-50">
+  {/* Header - Always present */}
+  <Header />
+  
+  {/* Main Content Area */}
+  <main className="container mx-auto px-4 py-8">
+    {/* Page Content - Breadcrumbs at top */}
+    <YourPage />
+  </main>
+</div>
+```
+
+### Testing Requirements
+
+1. **Path Generation**: Test with various URL structures
+2. **Navigation**: Verify all breadcrumb links work correctly
+3. **Responsive**: Test on desktop and mobile devices
+4. **Active State**: Ensure current page is marked as active
+5. **Back Arrow**: Test mobile back arrow functionality
+
+### Migration Guide
+
+If you encounter pages without breadcrumbs:
+
+1. **Add import**: Import Breadcrumbs component
+2. **Add component**: Place `<Breadcrumbs />` at top of page content
+3. **Test navigation**: Verify breadcrumb links work
+4. **Check responsive**: Test on different screen sizes
+5. **Update structure**: Follow standard page structure
+
+### Common Patterns
+
+#### 1. Simple Page
+```tsx
+export default function SimplePage() {
+  return (
+    <div className="space-y-8">
+      <Breadcrumbs />
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        <h1 className="text-2xl font-bold text-gray-900">Page Title</h1>
+        {/* Content */}
+      </div>
+    </div>
+  );
+}
+```
+
+#### 2. Page with Header
+```tsx
+export default function PageWithHeader() {
+  return (
+    <div className="space-y-8">
+      <Breadcrumbs />
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
+        <h1 className="text-3xl font-bold text-gray-900">Page Title</h1>
+        <p className="text-lg text-gray-600">Description</p>
+      </div>
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        {/* Content */}
+      </div>
+    </div>
+  );
+}
+```
+
+### Troubleshooting
+
+#### 1. Breadcrumbs Not Showing
+```tsx
+// ❌ Wrong - missing import
+export default function Page() {
+  return (
+    <div>
+      {/* Missing breadcrumbs */}
+      <div>Content</div>
+    </div>
+  );
+}
+
+// ✅ Correct - with breadcrumbs
+import { Breadcrumbs } from '@/components/layouts';
+
+export default function Page() {
+  return (
+    <div className="space-y-8">
+      <Breadcrumbs />
+      <div>Content</div>
+    </div>
+  );
+}
+```
+
+#### 2. Wrong Import Path
+```tsx
+// ❌ Wrong - incorrect path
+import { Breadcrumbs } from './Breadcrumbs';
+
+// ✅ Correct - use layouts import
+import { Breadcrumbs } from '@/components/layouts';
+```
+
+#### 3. Missing Page Structure
+```tsx
+// ❌ Wrong - breadcrumbs inside content
+export default function Page() {
+  return (
+    <div className="bg-white p-6">
+      <h1>Title</h1>
+      <Breadcrumbs /> {/* Wrong position */}
+      <div>Content</div>
+    </div>
+  );
+}
+
+// ✅ Correct - breadcrumbs at top
+export default function Page() {
+  return (
+    <div className="space-y-8">
+      <Breadcrumbs /> {/* Correct position */}
+      <div className="bg-white p-6">
+        <h1>Title</h1>
+        <div>Content</div>
+      </div>
+    </div>
+  );
+}
+```
+
+### Performance Considerations
+
+1. **Automatic Generation**: No performance impact from manual configuration
+2. **Lazy Loading**: Breadcrumbs load with page content
+3. **Caching**: Navigation links are cached by Next.js
+4. **Minimal DOM**: Lightweight component structure
+
+### Accessibility
+
+The Breadcrumbs component includes:
+- Proper ARIA labels and roles
+- Keyboard navigation support
+- Screen reader compatibility
+- Semantic HTML structure
+- Focus management for links
+
+**⚠️ FAILURE TO FOLLOW THIS RULE WILL RESULT IN:**
+- Inconsistent navigation across the application
+- Poor user experience on non-root pages
+- Missing back navigation functionality
+- Code review rejection
+- Incomplete page structure
+
+**🚀 SUCCESS CRITERIA:**
+- All non-root pages have breadcrumbs
+- Breadcrumbs auto-generate from path
+- Consistent navigation behavior
+- Proper responsive design
+- Clean page structure
