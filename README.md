@@ -1,36 +1,162 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aryandi Portfolio Website
 
-## Getting Started
+A modern, responsive portfolio website built with Next.js, TypeScript, and Tailwind CSS.
 
-First, run the development server:
+## 🚀 Features
 
+- **Modern Design**: Eye-catching gradient backgrounds and smooth animations
+- **Mobile-First**: Fully responsive design optimized for all devices
+- **Dark Mode**: Toggle between light and dark themes
+- **Interactive Elements**: Smooth hover effects and scroll animations
+- **Performance Optimized**: Fast loading with Next.js optimization
+- **SEO Ready**: Static generation for better search engine visibility
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **Deployment**: GitHub Pages
+
+## 📦 Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/aryandi.git
+cd aryandi
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+## 🚀 Deployment
 
-To learn more about Next.js, take a look at the following resources:
+This project is configured for automatic deployment to GitHub Pages:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Push your changes to the `main` branch
+2. GitHub Actions will automatically build and deploy the site
+3. Your site will be available at `https://yourusername.github.io/aryandi`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📁 Project Structure
 
-## Deploy on Vercel
+```
+src/
+├── app/                 # Next.js app directory
+├── components/          # Reusable UI components
+│   ├── ui/             # Basic UI components
+│   ├── Header/         # Navigation header
+│   ├── Hero/           # Hero section
+│   ├── About/          # About section
+│   ├── Skills/         # Skills section
+│   ├── Projects/       # Projects showcase
+│   ├── Contact/        # Contact form
+│   └── Footer/         # Footer
+├── screens/            # Page components
+│   └── Home/           # Home page
+├── types/              # TypeScript type definitions
+└── utils/              # Utility functions and constants
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎨 Customization
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Personal Information
+Update your personal information in `src/utils/constants.ts`:
+
+```typescript
+export const personalInfo: PersonalInfo = {
+  name: "Your Name",
+  title: "Your Title",
+  bio: "Your bio...",
+  avatar: "/images/your-photo.png",
+  contact: {
+    email: "your.email@example.com",
+    phone: "+62 812-3456-7890",
+    location: "Your Location",
+    linkedin: "https://linkedin.com/in/yourprofile",
+    github: "https://github.com/yourusername",
+    website: "https://yourwebsite.com"
+  }
+};
+```
+
+### Projects
+Add your projects in the `projects` array in `src/utils/constants.ts`:
+
+```typescript
+export const projects: Project[] = [
+  {
+    id: "1",
+    title: "Project Title",
+    description: "Project description...",
+    image: "/images/project-image.png",
+    technologies: ["React", "Next.js", "TypeScript"],
+    liveUrl: "https://your-project.com",
+    githubUrl: "https://github.com/yourusername/project",
+    featured: true
+  }
+];
+```
+
+### Skills
+Update your skills in the `skills` array in `src/utils/constants.ts`:
+
+```typescript
+export const skills: Skill[] = [
+  { name: "React", level: 95, category: "frontend" },
+  { name: "TypeScript", level: 90, category: "frontend" },
+  // ... more skills
+];
+```
+
+## 🎯 Sections
+
+- **Hero**: Introduction with your photo and main CTA
+- **About**: Personal story and experience timeline
+- **Skills**: Technical skills with progress bars
+- **Projects**: Portfolio showcase with project details
+- **Contact**: Contact form and social links
+
+## 📱 Mobile Features
+
+- Responsive sidebar navigation
+- Touch-optimized interactions
+- Mobile-first design approach
+- Smooth animations and transitions
+
+## 🎨 Styling
+
+The project uses Tailwind CSS with custom animations and gradients. Key design elements:
+
+- **Colors**: Blue to purple gradient theme
+- **Typography**: Modern, readable fonts
+- **Spacing**: Consistent spacing scale
+- **Animations**: Smooth transitions and hover effects
+- **Shadows**: Subtle depth and elevation
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](../../issues).
+
+## 📞 Contact
+
+- **Email**: aryandi@example.com
+- **LinkedIn**: [linkedin.com/in/aryandi](https://linkedin.com/in/aryandi)
+- **GitHub**: [github.com/aryandi](https://github.com/aryandi)
+
+---
+
+Made with ❤️ by Aryandi
