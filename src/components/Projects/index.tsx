@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { ExternalLink, Github, Star, Eye } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/Card';
 import { Button } from '#/components/ui/Button';
@@ -52,9 +53,11 @@ const Projects = () => {
 
         {/* Project Image */}
         <div className="relative h-48 overflow-hidden">
-          <img
+          <Image
             src={project.image}
             alt={project.title}
+            width={600}
+            height={400}
             className="w-full h-full object-cover"
           />
           

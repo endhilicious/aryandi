@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { ArrowDown, Github, Linkedin, Mail, MapPin } from 'lucide-react';
 import { Button } from '#/components/ui/Button';
 import { personalInfo } from '#/utils/constants';
@@ -54,10 +55,13 @@ const Hero = () => {
             <div className="inline-block relative">
               <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1 animate-pulse">
                 <div className="w-full h-full rounded-full overflow-hidden">
-                  <img
+                  <Image
                     src={personalInfo.avatar}
                     alt={personalInfo.name}
+                    width={160}
+                    height={160}
                     className="w-full h-full object-cover"
+                    priority
                   />
                 </div>
               </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { Code, Users, Award, Coffee } from 'lucide-react';
 import { Card, CardContent } from '#/components/ui/Card';
 import { personalInfo, experiences } from '#/utils/constants';
@@ -53,9 +54,11 @@ const About = () => {
             <div className="space-y-8">
               <div className="relative">
                 <div className="w-full h-96 rounded-2xl overflow-hidden">
-                  <img
+                  <Image
                     src={personalInfo.avatar}
                     alt={personalInfo.name}
+                    width={400}
+                    height={400}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -80,7 +83,7 @@ const About = () => {
 
             {/* Right side - Stats */}
             <div className="grid grid-cols-2 gap-6">
-              {stats.map((stat, index) => (
+              {stats.map((stat) => (
                 <Card key={stat.label} hover className="text-center">
                   <CardContent className="p-6">
                     <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-lg mb-4">

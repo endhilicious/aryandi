@@ -107,7 +107,7 @@ const Contact = () => {
               Get In <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Touch</span>
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Have a project in mind or just want to chat? I'd love to hear from you!
+              Have a project in mind or just want to chat? I&apos;d love to hear from you!
             </p>
           </div>
 
@@ -241,7 +241,7 @@ const Contact = () => {
                           onChange={handleInputChange}
                           required
                           className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-                          placeholder="what&apos;s this about?"
+                          placeholder="What&apos;s this about?"
                         />
                       </div>
                       
