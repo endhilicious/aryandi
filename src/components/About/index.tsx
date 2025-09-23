@@ -52,8 +52,13 @@ const About = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
             {/* Left side - Image and description */}
             <div className="space-y-8">
-              <div className="relative">
-                <div className="w-full h-96 rounded-2xl overflow-hidden">
+              {/* Modern background wrapper for the photo */}
+              <div className="relative rounded-3xl overflow-hidden shadow-xl ring-1 ring-gray-200/60 dark:ring-gray-800/60">
+                {/* Gradient blobs background */}
+                <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_0%_0%,rgba(59,130,246,0.18),transparent_60%),radial-gradient(50%_60%_at_100%_100%,rgba(168,85,247,0.18),transparent_60%)]" />
+                {/* Subtle grid overlay */}
+                <div aria-hidden className="absolute inset-0 -z-10 opacity-20 mix-blend-overlay bg-[linear-gradient(to_right,rgba(255,255,255,0.15)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.15)_1px,transparent_1px)] bg-[size:24px_24px]" />
+                <div className="w-full h-96 backdrop-blur-[1px]">
                   <Image
                     src={personalInfo.avatar}
                     alt={personalInfo.name}

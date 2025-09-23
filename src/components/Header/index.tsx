@@ -19,12 +19,40 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    if (isDarkMode) {
+    // initialize theme from localStorage or system
+    const stored = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialDark = stored ? stored === 'dark' : prefersDark;
+    setIsDarkMode(initialDark);
+    if (initialDark) {
       document.documentElement.classList.add('dark');
+      document.documentElement.dataset.theme = 'dark';
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.dataset.theme = 'light';
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.dataset.theme = 'dark';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.dataset.theme = 'light';
+      localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
+
+  useEffect(() => {
+    // lock body scroll when drawer open (mobile)
+    if (isMenuOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = originalStyle; };
+    }
+  }, [isMenuOpen]);
 
   const navItems = [
     { name: 'Home', href: '#home' },
@@ -50,7 +78,7 @@ const Header = () => {
           scrolled
             ? "bg-white/80 backdrop-blur-md shadow-lg dark:bg-gray-900/80"
             : "bg-transparent"
-        )}
+        , isMenuOpen && "pointer-events-none")}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -76,33 +104,33 @@ const Header = () => {
 
             {/* Right side buttons */}
             <div className="flex items-center space-x-4">
-              {/* Dark mode toggle */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-2"
-              >
-                {isDarkMode ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
-                )}
-              </Button>
+              {/* Dark mode toggle - hidden when drawer open to avoid overlap with close */}
+              {!isMenuOpen && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="p-2"
+                >
+                  {isDarkMode ? (
+                    <Sun className="h-5 w-5" />
+                  ) : (
+                    <Moon className="h-5 w-5" />
+                  )}
+                </Button>
+              )}
 
               {/* Mobile menu button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden p-2"
-              >
-                {isMenuOpen ? (
-                  <X className="h-6 w-6" />
-                ) : (
+              {!isMenuOpen && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsMenuOpen(true)}
+                  className="md:hidden p-2"
+                >
                   <Menu className="h-6 w-6" />
-                )}
-              </Button>
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -111,17 +139,17 @@ const Header = () => {
       {/* Mobile Menu */}
       <div
         className={cn(
-          "fixed inset-0 z-40 md:hidden transition-all duration-300",
+          "fixed inset-0 z-[70] md:hidden transition-all duration-300",
           isMenuOpen
             ? "opacity-100 visible"
             : "opacity-0 invisible"
         )}
       >
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)} />
-        <div className="fixed top-0 right-0 h-full w-80 max-w-sm bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[75]" onClick={() => setIsMenuOpen(false)} />
+        <div className="fixed top-0 right-0 h-full w-80 max-w-sm bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 overflow-y-auto z-[80]" role="dialog" aria-modal="true">
           <div className="flex flex-col h-full">
             {/* Mobile menu header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800 pointer-events-auto">
               <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Menu</h2>
               <Button
                 variant="ghost"

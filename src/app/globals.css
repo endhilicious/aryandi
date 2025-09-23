@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Use class-based dark mode with Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -17,6 +20,12 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+/* Explicit theme override via html.dark class */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 body {

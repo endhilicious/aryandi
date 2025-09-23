@@ -7,6 +7,8 @@ export interface Project {
   liveUrl?: string;
   githubUrl?: string;
   featured?: boolean;
+  descriptionLong?: string;
+  gallery?: string[];
 }
 
 export interface Skill {

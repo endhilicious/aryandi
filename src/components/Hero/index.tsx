@@ -39,7 +39,7 @@ const Hero = () => {
     <section
       id="home"
       ref={heroRef}
-      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
+      className="min-h-[100svh] flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-24 md:pt-28"
     >
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden">
@@ -49,7 +49,7 @@ const Hero = () => {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-4xl mx-auto">
+        <div className="text-center max-w-5xl mx-auto">
           {/* Avatar */}
           <div className="mb-8 relative">
             <div className="inline-block relative">
@@ -87,7 +87,7 @@ const Hero = () => {
           </div>
 
           {/* Bio */}
-          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
+          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl lg:max-w-4xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
             {personalInfo.bio}
           </p>
 

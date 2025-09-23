@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { ExternalLink, Github, Star, Eye } from 'lucide-react';
+import { ExternalLink, Github, X, Eye } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/Card';
 import { Button } from '#/components/ui/Button';
 import { projects } from '#/utils/constants';
@@ -10,6 +10,7 @@ import { projects } from '#/utils/constants';
 const Projects = () => {
   const projectsRef = useRef<HTMLDivElement>(null);
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+  const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -40,17 +41,8 @@ const Projects = () => {
         }`}
         onMouseEnter={() => setHoveredProject(project.id)}
         onMouseLeave={() => setHoveredProject(null)}
+        onClick={() => setActiveProjectId(project.id)}
       >
-        {/* Featured Badge */}
-        {project.featured && (
-          <div className="absolute top-4 right-4 z-10">
-            <div className="flex items-center space-x-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-              <Star className="h-4 w-4" />
-              <span>Featured</span>
-            </div>
-          </div>
-        )}
-
         {/* Project Image */}
         <div className="relative h-48 overflow-hidden">
           <Image
@@ -155,27 +147,24 @@ const Projects = () => {
             </p>
           </div>
 
-          {/* Featured Projects */}
-          <div className="mb-16">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
-              Featured Projects
-            </h3>
-            <div className="grid md:grid-cols-2 gap-8">
-              {projects.filter(project => project.featured).map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
-          </div>
-
           {/* All Projects */}
           <div className="mb-16">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
               All Projects
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {projects.map((project) => (
+              {projects.slice(0, 6).map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
+            </div>
+            <div className="mt-10 text-center">
+              <Button
+                variant="outline"
+                onClick={() => window.alert('View more coming soon')}
+                className="px-8 py-3"
+              >
+                View More
+              </Button>
             </div>
           </div>
 
@@ -251,6 +240,37 @@ const Projects = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Fullscreen Modal for project details */}
+          {activeProjectId && (
+            <div className="fixed inset-0 z-[90]">
+              <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setActiveProjectId(null)} />
+              <div className="fixed inset-0 overflow-y-auto">
+                <div className="min-h-full p-4 sm:p-8 flex items-start justify-center">
+                  <div className="w-full max-w-5xl bg-white dark:bg-gray-950 rounded-2xl shadow-2xl ring-1 ring-gray-200/50 dark:ring-gray-800/60">
+                    <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-800 sticky top-0 bg-white/90 dark:bg-gray-950/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-gray-950/60">
+                      <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100">{projects.find(p => p.id === activeProjectId)?.title}</h4>
+                      <Button variant="ghost" size="sm" onClick={() => setActiveProjectId(null)} className="p-2">
+                        <X className="h-6 w-6" />
+                      </Button>
+                    </div>
+                    <div className="p-4 sm:p-6 space-y-6">
+                      <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        {projects.find(p => p.id === activeProjectId)?.descriptionLong || projects.find(p => p.id === activeProjectId)?.description}
+                      </p>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        {(projects.find(p => p.id === activeProjectId)?.gallery || [projects.find(p => p.id === activeProjectId)?.image]).filter(Boolean).map((src, idx) => (
+                          <div key={String(src)+idx} className="relative w-full h-56 sm:h-64 rounded-lg overflow-hidden">
+                            <Image src={src as string} alt="Project snapshot" fill className="object-cover" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

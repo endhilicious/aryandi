@@ -1,16 +1,16 @@
 import { Project, Skill, Experience, PersonalInfo } from '#/types';
 
 export const personalInfo: PersonalInfo = {
-  name: "Aryandi",
-  title: "Full Stack Developer",
-  bio: "Passionate full-stack developer with expertise in modern web technologies. Specialized in creating responsive, user-friendly applications using React, Next.js, Node.js, and cloud technologies.",
+  name: "Muh. Aryandi",
+  title: "Frontend Lead Engineer",
+  bio: "I'm a passionate Frontend Engineer with a strong background in programming and deep enthusiasm for the fundamentals of JavaScript and TypeScript. I specialize in HTML/CSS slicing, have solid UI/UX sensibilities (Figma), and build with React, Next.js, Gatsby, and Storybook. I care deeply about quality and reliability, using Jest, Mocha, and RTL to ensure robust components. I enjoy leading, mentoring, and collaborating across teams, including in remote environments.",
   avatar: "/images/Aryandi-photo1.png",
   contact: {
-    email: "aryandi@example.com",
+    email: "muhammadaryandi90@gmail.com",
     phone: "+62 812-3456-7890",
-    location: "Jakarta, Indonesia",
-    linkedin: "https://linkedin.com/in/aryandi",
-    github: "https://github.com/aryandi",
+    location: "Makassar, Sulawesi Selatan, Indonesia",
+    linkedin: "https://www.linkedin.com/in/muh-aryandi",
+    github: "https://github.com/aryandi37",
     website: "https://aryandi.dev"
   }
 };
@@ -87,26 +87,97 @@ export const projects: Project[] = [
 export const experiences: Experience[] = [
   {
     id: "1",
-    company: "Tech Solutions Inc.",
-    position: "Senior Full Stack Developer",
-    duration: "2022 - Present",
-    description: "Led development of scalable web applications serving 100K+ users. Implemented microservices architecture and mentored junior developers.",
-    technologies: ["React", "Node.js", "AWS", "Docker", "PostgreSQL"]
+    company: "Visi Prima Nusantara",
+    position: "Frontend Lead / Scrum Master",
+    duration: "Jul 2023 - Present",
+    description: "Led frontend initiatives and Scrum adoption (JIRA workflows, roles, ceremonies) for 30+ IT members; transitioned project management from Trello to JIRA and established iterative guidelines across sprints.",
+    technologies: ["React", "Next.js", "TypeScript", "JIRA", "Scrum"]
   },
   {
     id: "2",
-    company: "Digital Agency Co.",
-    position: "Full Stack Developer",
-    duration: "2020 - 2022",
-    description: "Developed and maintained multiple client projects. Improved application performance by 60% through optimization and integrated third-party APIs.",
-    technologies: ["Vue.js", "Express.js", "MongoDB", "Redis", "Stripe"]
+    company: "Keller Williams Realty, Inc.",
+    position: "Frontend Engineer",
+    duration: "Feb 2019 - Jun 2023",
+    description: "Handled 600+ JIRA tickets; collaborated with 200+ devs; increased test coverage via unit/E2E; refactored multiple repos from JS to TS; built common Listings components/utilities repo used across features.",
+    technologies: ["React", "TypeScript", "Jest", "RTL", "Mocha"]
   },
   {
     id: "3",
-    company: "StartupXYZ",
+    company: "INMAGINE",
     position: "Frontend Developer",
-    duration: "2019 - 2020",
-    description: "Built responsive user interfaces and collaborated with design team to implement pixel-perfect designs. Contributed to 200% user base growth.",
-    technologies: ["React", "TypeScript", "Styled Components", "Redux", "Jest"]
+    duration: "May 2021 - Nov 2022",
+    description: "Contributed to frontend features and performance improvements across product surfaces.",
+    technologies: ["React", "TypeScript", "Next.js"]
+  },
+  {
+    id: "4",
+    company: "PT Docotel Teknologi Celebes",
+    position: "Frontend Engineer",
+    duration: "Nov 2018 - Mar 2019",
+    description: "Delivered frontend interfaces for internal and client applications.",
+    technologies: ["React", "JavaScript", "Bootstrap"]
+  },
+  {
+    id: "5",
+    company: "Developer Circles from Facebook",
+    position: "Community Lead",
+    duration: "Jun 2019 - Jun 2023",
+    description: "Led community programs, talks, and developer upskilling initiatives in Makassar region.",
+    technologies: ["Community", "Leadership", "Workshops"]
   }
+];
+
+export const specializingIn: string[] = [
+  // Row 1
+  "Javascript",
+  "HTML CSS",
+  "Nextjs",
+  "Typescript",
+  "Ionic",
+  // Row 2
+  "Redux",
+  "Storybook",
+  "Gatsby",
+  "React Testing Library",
+  "React Native",
+  // Row 3
+  "React Query",
+  "Material UI",
+  "React",
+  "GraphQL",
+  "Jest",
+  // Row 4
+  "Figma",
+  "Tailwind",
+  "Bootstrap",
+  "Jquery",
+  "Firebase",
+  // Row 5
+  "Supabase",
+  "MySQL",
+  "Codeigniter",
+  "AWS",
+  "Docker",
+  // Row 6
+  "Jira",
+  "Semantic HTML",
+  "Vue",
+  "Trello"
+];
+
+export const languages: string[] = [
+  "English (Limited Working)",
+  "Bahasa Indonesia (Limited Working)"
+];
+
+export const certifications: string[] = [
+  "Progressive Web Apps Training"
+];
+
+export const honorsAwards: string[] = [
+  "2nd winner Website Competition – Inception 1",
+  "3rd winner Makassar Telkom",
+  "Juarayya Hackathon Festival 2018 – 3rd winner",
+  "Top 32 Best Talent – Indonesia NEXT 2018",
+  "Favorite 32 best finalist – Indonesia NEXT 2018"
 ];
