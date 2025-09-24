@@ -12,6 +12,7 @@ export interface Project {
   company?: string;
   role?: string;
   duration?: string;
+  imageCaptions?: Array<{ src: string; title: string; description: string }>;
 }
 
 export interface Skill {

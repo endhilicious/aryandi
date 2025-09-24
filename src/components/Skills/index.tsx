@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Target, Handshake, BookOpen } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/Card';
+import { Card, CardContent } from '#/components/ui/Card';
 import { specializingIn } from '#/utils/constants';
 
 const Skills = () => {
@@ -40,7 +40,7 @@ const Skills = () => {
             :root {
               --javascript-color: #f7df1e;
               --html-css-color: #e34f26;
-              --nextjs-color: #000000;
+              --nextjs-color: #0070F3;
               --typescript-color: #3178c6;
               --ionic-color: #3880ff;
               --redux-color: #764abc;
@@ -160,7 +160,7 @@ const Skills = () => {
                     {/* Content */}
                     <div className="relative z-10">
                       {/* Icon with glassmorphism effect */}
-                      <div className={`mx-auto mb-4 h-20 w-20 rounded-2xl border-2 bg-white/20 dark:bg-gray-300/30 backdrop-blur-md grid place-items-center overflow-hidden transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-inner`} 
+                      <div className={`mx-auto mb-4 h-20 w-20 rounded-2xl border-2 ${label === 'Nextjs' ? 'bg-white dark:bg-white ring-1 ring-gray-300' : 'bg-white/20 dark:bg-gray-300/30'} backdrop-blur-md grid place-items-center overflow-hidden transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-inner`} 
                            style={{ 
                              borderColor: `var(--${label.toLowerCase().replace(/\s+/g, '-')}-color)`,
                              boxShadow: `0 0 20px var(--${label.toLowerCase().replace(/\s+/g, '-')}-color)20`
@@ -170,7 +170,7 @@ const Skills = () => {
                             src={iconSrc} 
                             alt={`${label} logo`} 
                             fill 
-                            className="object-contain drop-shadow-lg" 
+                            className={`object-contain drop-shadow-lg ${label === 'Nextjs' ? 'dark:invert-0' : ''}`} 
                             style={{ 
                               filter: 'brightness(1.2) contrast(1.1) saturate(1.1)',
                               transition: 'all 0.3s ease'

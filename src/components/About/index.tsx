@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Code, Users, Award, Coffee } from 'lucide-react';
 import { Card, CardContent } from '#/components/ui/Card';
-import { personalInfo, experiences } from '#/utils/constants';
+import { personalInfo, experiences, teaching, organizations, speakerActivities, certificationsDetailed, honorsAwards } from '#/utils/constants';
 
 const About = () => {
   const aboutRef = useRef<HTMLDivElement>(null);
@@ -284,6 +284,74 @@ const About = () => {
                 })}
               </div>
             </div>
+          </div>
+
+          {/* Additional Sections */}
+          <div className="grid lg:grid-cols-2 gap-8 mb-16">
+            {/* Teaching */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Teaching</h3>
+                <ul className="space-y-3 list-disc pl-5 text-gray-700 dark:text-gray-300">
+                  {teaching.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Organizations */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Organization</h3>
+                <ul className="space-y-3 list-disc pl-5 text-gray-700 dark:text-gray-300">
+                  {organizations.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Speakers */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Speakers</h3>
+                <ul className="space-y-3 list-disc pl-5 text-gray-700 dark:text-gray-300">
+                  {speakerActivities.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Certifications */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Certifications</h3>
+                <ul className="space-y-3 list-disc pl-5 text-gray-700 dark:text-gray-300">
+                  {certificationsDetailed.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Awards */}
+          <div className="mb-16">
+            <Card className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/10 dark:to-yellow-900/10 border-0">
+              <CardContent className="p-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Awards</h3>
+                <div className="grid md:grid-cols-2 gap-3">
+                  {honorsAwards.map((item) => (
+                    <div key={item} className="flex items-center gap-3 p-3 rounded-lg bg-white/70 dark:bg-gray-800/50 ring-1 ring-gray-200/60 dark:ring-gray-700/60">
+                      <div className="w-2 h-2 rounded-full bg-amber-500" />
+                      <span className="text-gray-700 dark:text-gray-300">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Call to Action */}

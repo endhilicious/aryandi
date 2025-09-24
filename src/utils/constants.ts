@@ -54,7 +54,7 @@ export const projects: Project[] = [
     featured: true,
     company: "Noble Software / Visiprima",
     role: "Lead Frontend Developer",
-    duration: "2019 - Present",
+    duration: "September 2023 - September 2025",
     gallery: ["/images/project_img/PortalSekolah.png"]
   },
   {
@@ -68,7 +68,7 @@ export const projects: Project[] = [
     featured: true,
     company: "Noble Software / Visiprima",
     role: "Lead Frontend Developer",
-    duration: "2022 - Present",
+    duration: "September 2023 - January 2025",
     gallery: ["/images/project_img/portalKerja.png"]
   },
   {
@@ -82,7 +82,7 @@ export const projects: Project[] = [
     featured: true,
     company: "Noble Software / Visiprima",
     role: "Lead Frontend Developer & Scrum Master",
-    duration: "2023 - Present",
+    duration: "January 2024 - January 2025",
     gallery: ["/images/project_img/portalKampus.png"]
   },
   {
@@ -96,7 +96,7 @@ export const projects: Project[] = [
     featured: false,
     company: "Noble Software / Visiprima",
     role: "Lead Frontend Developer",
-    duration: "2023 - Present",
+    duration: "September 2023 - September 2025",
     gallery: ["/images/project_img/feature-flag.png"]
   },
   {
@@ -110,7 +110,7 @@ export const projects: Project[] = [
     featured: false,
     company: "Noble Software / Visiprima",
     role: "Lead Frontend Developer",
-    duration: "2024 - Present",
+    duration: "2025",
     gallery: ["/images/project_img/subscription-flag.png"]
   },
   {
@@ -124,7 +124,7 @@ export const projects: Project[] = [
     featured: false,
     company: "VPN",
     role: "Scrum Master Volunteer",
-    duration: "2023 - 2024",
+    duration: "September 2023 - September 2025",
     gallery: [
       "/images/project_img/scrum-master-trello-before-1.png",
       "/images/project_img/scrum-master-trello-before-2.png",
@@ -144,7 +144,7 @@ export const projects: Project[] = [
     featured: false,
     company: "Keller Williams Realty",
     role: "Frontend Developer",
-    duration: "2022 - 2023",
+    duration: "February 2019 - February 2023",
     gallery: [
       "/images/project_img/eal-react-ui-kit-1.1.png",
       "/images/project_img/eal-react-ui-kit-1.2.png"
@@ -161,7 +161,7 @@ export const projects: Project[] = [
     featured: false,
     company: "Keller Williams Realty",
     role: "Frontend Developer",
-    duration: "2022 - 2023",
+    duration: "2019 - 2023",
     gallery: [
       "/images/project_img/ListingsCommonApplet.png",
       "/images/project_img/ListingsApplet.png",
@@ -237,7 +237,7 @@ export const projects: Project[] = [
     featured: false,
     company: "Gense Technology",
     role: "Frontend Developer",
-    duration: "2021 - 2022",
+    duration: "2022",
     gallery: [
       "/images/project_img/GenseTechnology1.png",
       "/images/project_img/GenseTechnology2.png",
@@ -255,7 +255,7 @@ export const projects: Project[] = [
     featured: false,
     company: "Docotel Technology Celebes",
     role: "Frontend Developer",
-    duration: "2020 - 2021",
+    duration: "2018",
     gallery: [
       "/images/project_img/dtc-docoblast.png",
       "/images/project_img/dtc-eproc.png"
@@ -272,7 +272,7 @@ export const projects: Project[] = [
     featured: false,
     company: "AIDU Education",
     role: "Fullstack Developer",
-    duration: "2019 - 2020",
+    duration: "2016 - 2017",
     gallery: ["/images/project_img/aidu-exam.png"]
   },
   {
@@ -286,13 +286,40 @@ export const projects: Project[] = [
     featured: false,
     company: "Freelance",
     role: "Fullstack Developer",
-    duration: "2018 - 2023",
+    duration: "2021 - present",
     gallery: [
       "/images/project_img/kredit-makassar.png",
       "/images/project_img/rental-motor-makassar-1.png",
       "/images/project_img/rental-motor-makassar-2.png",
       "/images/project_img/kita-tolong-1.png",
       "/images/project_img/kita-tolong-2.png"
+    ],
+    imageCaptions: [
+      {
+        src: "/images/project_img/kredit-makassar.png",
+        title: "Kredit Makassar - Credit Simulation Platform",
+        description: "Credit calculator, application form, monthly installment breakdown, and planning tools."
+      },
+      {
+        src: "/images/project_img/rental-motor-makassar-1.png",
+        title: "Rental Motor Makassar - Motorcycle Rental Platform",
+        description: "Motorcycle listing with models/pricing and day-based availability management."
+      },
+      {
+        src: "/images/project_img/rental-motor-makassar-2.png",
+        title: "Rental Motor Makassar - Dashboard Management",
+        description: "Rental dashboard for bookings, renter management, and transaction tracking."
+      },
+      {
+        src: "/images/project_img/kita-tolong-1.png",
+        title: "Kita Tolong - E‑Commerce and POS Platform",
+        description: "Business website + POS with stock management and cashier features."
+      },
+      {
+        src: "/images/project_img/kita-tolong-2.png",
+        title: "Kita Tolong - Problem/Solution",
+        description: "Problem mapping and solution page; same functional scope as the first image."
+      }
     ]
   }
 ];
@@ -417,4 +444,40 @@ export const honorsAwards: string[] = [
   "Juarayya Hackathon Festival 2018 – 3rd winner",
   "Top 32 Best Talent – Indonesia NEXT 2018",
   "Favorite 32 best finalist – Indonesia NEXT 2018"
+];
+
+// Additional profile data
+export const teaching: string[] = [
+  "Teaching Assistant of Web Programming Courses (2017 - 2023)",
+  "Teaching Assistant of Data Structures/Algorithms (2020 - 2023)",
+  "Teaching Assistant of Human & Computer Interaction (UI/UX) (2019)",
+  "ReactJS Fundamentals Workshops & Bootcamps (2019 - 2023)",
+  "Tutor of Math and English for High School Students (2016 - 2018)"
+];
+
+export const organizations: string[] = [
+  "Facebook Developer Circle Lead Makassar",
+  "Community Leader and Local Program Manager (2019 - 2023)",
+  "Google Developer Group Makassar — Co‑Founder (2020 - 2023)",
+  "Makassar Programmer Community — Program Organizer",
+  "Google Developer Student Club Chapter Hasanuddin University (2017 - 2018)",
+  "Co‑Lead Makassar RMTF (2017 - 2018)",
+  "Coordinator Website Division, Informatics Student Organization (2016 - 2018)"
+];
+
+export const speakerActivities: string[] = [
+  "Guest Speaker for Facebook Developer Circle Makassar (2021 - 2023)",
+  "Google Developer Group DevFest/DevTalk Speaker (2022 - 2023)",
+  "ReactJS Fundamentals & Best Website Programming Training",
+  "Makassar Digital Valley — React Workshops (2019)",
+  "Introduction to Progressive Web Apps — Makassar Programmer Community (2018)"
+];
+
+export const certificationsDetailed: string[] = [
+  "Evidence-Based Approach (EBA) — Minamata, Japan (2023)",
+  "APIE (Asia Pacific Internet Engineering) — Keio Univ., Japan (2023)",
+  "Microsoft Office Specialist Excel (2013)",
+  "Microsoft Office Specialist PowerPoint (2013)",
+  "Querying Microsoft SQL Server (2012/2013)",
+  "Google Ads Fundamental (2014)"
 ];

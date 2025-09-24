@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import { ExternalLink, Github, X, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/Card';
@@ -15,8 +15,21 @@ const Projects = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [nextImageIndex, setNextImageIndex] = useState<number | null>(null);
+  const [isNextLoaded, setIsNextLoaded] = useState(false);
   
   const selectedProject = activeProjectId ? projects.find(p => p.id === activeProjectId) : null;
+
+  const changeImage = useCallback((targetIndex: number) => {
+    if (!selectedProject) return;
+    const total = selectedProject.gallery?.length || 0;
+    if (total <= 1) return;
+    const normalized = ((targetIndex % total) + total) % total; // wrap
+    // prepare crossfade: set upcoming image and wait for load
+    setNextImageIndex(normalized);
+    setIsNextLoaded(false);
+  }, [selectedProject]);
 
   // Handle body scroll lock when modal is open
   useEffect(() => {
@@ -66,11 +79,10 @@ const Projects = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!activeProjectId || !selectedProject?.gallery || selectedProject.gallery.length <= 1) return;
-      
       if (e.key === 'ArrowLeft') {
-        setCurrentImageIndex(prev => prev > 0 ? prev - 1 : selectedProject.gallery!.length - 1);
+        changeImage(currentImageIndex - 1);
       } else if (e.key === 'ArrowRight') {
-        setCurrentImageIndex(prev => prev < selectedProject.gallery!.length - 1 ? prev + 1 : 0);
+        changeImage(currentImageIndex + 1);
       }
     };
 
@@ -79,7 +91,7 @@ const Projects = () => {
     }
 
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [activeProjectId, selectedProject]);
+  }, [activeProjectId, selectedProject, currentImageIndex, changeImage]);
 
   const ProjectCard = ({ project }: { project: typeof projects[0] }) => {
     const isHovered = hoveredProject === project.id;
@@ -96,12 +108,19 @@ const Projects = () => {
         {/* Project Image */}
         <div className="relative h-48 overflow-hidden">
           <Image
-            src={project.image}
+            src={(project.gallery && project.gallery[0] ? (project.gallery[0] as string) : project.image) || '/images/Picture.png'}
             alt={project.title}
             width={600}
             height={400}
             className="w-full h-full object-cover"
           />
+
+          {/* Gallery count badge */}
+          {project.gallery && project.gallery.length > 1 && (
+            <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md text-xs font-semibold bg-black/60 text-white backdrop-blur">
+              {project.gallery.length} images
+            </div>
+          )}
           
           {/* Overlay */}
           <div className={`absolute inset-0 bg-black/60 flex items-center justify-center space-x-4 transition-opacity duration-300 ${
@@ -200,27 +219,10 @@ const Projects = () => {
             </p>
           </div>
 
-          {/* Featured Projects */}
+          {/* All Projects */}
           <div className={`mb-16 transition-all duration-800 ease-out delay-200 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
-              Featured Projects
-            </h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {projects.filter(p => p.featured).map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
-          </div>
-
-          {/* All Projects */}
-          <div className={`mb-16 transition-all duration-800 ease-out delay-400 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
-              All Projects
-            </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {(showAll ? projects : projects.slice(0, 6)).map((project) => (
                 <ProjectCard key={project.id} project={project} />
@@ -530,43 +532,66 @@ const Projects = () => {
               isModalOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`} style={{ maxHeight: 'calc(90vh - 80px)' }}>
               {/* Project Image Carousel */}
-              <div className={`relative h-64 sm:h-80 rounded-2xl overflow-hidden mb-6 transition-all duration-700 delay-400 ${
+              <div className={`relative h-64 sm:h-80 rounded-2xl overflow-hidden mb-2 transition-all duration-700 delay-400 ${
                 isModalOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-8'
               }`}>
                 {selectedProject?.gallery && selectedProject.gallery.length > 0 ? (
                   <>
+                    {/* Current and next images for smooth crossfade */}
                     <Image
+                      key={`current-${currentImageIndex}`}
                       src={selectedProject.gallery[currentImageIndex] || selectedProject.image || '/images/Picture.png'}
                       alt={selectedProject?.title || 'Project'}
                       fill
-                      className="object-cover transition-transform duration-700"
+                      className={`object-cover transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
                     />
+                    {nextImageIndex !== null && (
+                      <Image
+                        key={`next-${nextImageIndex}`}
+                        src={selectedProject.gallery[nextImageIndex] || selectedProject.image || '/images/Picture.png'}
+                        alt={selectedProject?.title || 'Project next'}
+                        fill
+                        className={`object-cover transition-opacity duration-300 ${isNextLoaded ? 'opacity-100' : 'opacity-0'}`}
+                        onLoadingComplete={() => {
+                          // start crossfade only after next visual is loaded
+                          setIsTransitioning(true);
+                          // finish after the fade duration
+                          window.setTimeout(() => {
+                            setCurrentImageIndex(nextImageIndex);
+                            setIsTransitioning(false);
+                            setNextImageIndex(null);
+                            setIsNextLoaded(false);
+                          }, 300);
+                        }}
+                        onLoad={() => setIsNextLoaded(true)}
+                      />
+                    )}
                     {selectedProject.gallery.length > 1 && (
                       <>
                         <button
-                          onClick={() => setCurrentImageIndex(prev => prev > 0 ? prev - 1 : selectedProject.gallery!.length - 1)}
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                          onClick={() => changeImage(currentImageIndex - 1)}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 z-10"
                         >
                           <ChevronLeft className="w-5 h-5" />
                         </button>
                         <button
-                          onClick={() => setCurrentImageIndex(prev => prev < selectedProject.gallery!.length - 1 ? prev + 1 : 0)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                          onClick={() => changeImage(currentImageIndex + 1)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 z-10"
                         >
                           <ChevronRight className="w-5 h-5" />
                         </button>
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
                           {selectedProject.gallery.map((_, idx) => (
                             <button
                               key={idx}
-                              onClick={() => setCurrentImageIndex(idx)}
+                              onClick={() => changeImage(idx)}
                               className={`w-2 h-2 rounded-full transition-all duration-300 ${
                                 idx === currentImageIndex ? 'bg-white' : 'bg-white/50'
                               }`}
                             />
                           ))}
                         </div>
-                        <div className="absolute top-4 right-4 bg-black/50 text-white px-2 py-1 rounded text-sm">
+                        <div className="absolute top-4 right-4 bg-black/50 text-white px-2 py-1 rounded text-sm z-10">
                           {currentImageIndex + 1} / {selectedProject.gallery!.length}
                         </div>
                       </>
@@ -580,8 +605,26 @@ const Projects = () => {
                     className="object-cover transition-transform duration-700"
                   />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
               </div>
+
+              {/* Thumbnails */}
+              {selectedProject?.gallery && selectedProject.gallery.length > 1 && (
+                <div className="mb-6 flex gap-2 overflow-x-auto pb-2 snap-x">
+                  {selectedProject.gallery.map((thumbSrc, tIdx) => (
+                    <button
+                      key={`${thumbSrc}-${tIdx}`}
+                      onClick={() => changeImage(tIdx)}
+                      className={`relative flex-shrink-0 w-20 h-14 rounded-md overflow-hidden ring-2 transition-all duration-200 snap-start ${
+                        tIdx === currentImageIndex ? 'ring-blue-500' : 'ring-transparent hover:ring-gray-300'
+                      }`}
+                      aria-label={`Open image ${tIdx + 1}`}
+                    >
+                      <Image src={thumbSrc as string} alt="thumbnail" fill className="object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {/* Content */}
               <div className={`space-y-6 transition-all duration-600 delay-500 ${
@@ -592,6 +635,17 @@ const Projects = () => {
                   <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-gray-100 mb-4">
                     {selectedProject?.title}
                   </h2>
+                  {/* Per-image caption (title + description) */}
+                  {selectedProject?.imageCaptions && selectedProject.imageCaptions.length > 0 && (
+                    <div className="mb-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-800 ring-1 ring-gray-200/60 dark:ring-gray-700/60">
+                      <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                        {selectedProject.imageCaptions.find(c => c.src === (selectedProject.gallery?.[currentImageIndex] as string))?.title || selectedProject.imageCaptions[0].title}
+                      </h4>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">
+                        {selectedProject.imageCaptions.find(c => c.src === (selectedProject.gallery?.[currentImageIndex] as string))?.description || selectedProject.imageCaptions[0].description}
+                      </p>
+                    </div>
+                  )}
                   {(selectedProject?.company || selectedProject?.role || selectedProject?.duration) && (
                     <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                       {selectedProject?.company && (
