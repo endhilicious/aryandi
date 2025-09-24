@@ -1,18 +1,20 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Award, BadgeCheck, Languages } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/Card';
 import { certifications, honorsAwards, languages } from '#/utils/constants';
 
 const Resume = () => {
   const resumeRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            setIsVisible(true);
             entry.target.classList.add('animate-fade-in-up');
           }
         });
@@ -31,7 +33,9 @@ const Resume = () => {
     <section id="resume" className="py-20 bg-gradient-to-b from-white to-blue-50/40 dark:from-gray-900 dark:to-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div ref={resumeRef} className="max-w-6xl mx-auto space-y-12">
-          <div className="text-center">
+          <div className={`text-center transition-all duration-700 ease-out ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
             <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100">
               Resume <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Highlights</span>
             </h2>
@@ -40,7 +44,9 @@ const Resume = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className={`grid md:grid-cols-3 gap-6 transition-all duration-800 ease-out delay-200 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
             <Card className="border-0 bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 shadow-xl">
               <CardHeader className="flex items-center space-x-3">
                 <BadgeCheck className="h-6 w-6 text-blue-600" />

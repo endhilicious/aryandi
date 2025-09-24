@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ArrowDown, Github, Linkedin, Mail, MapPin } from 'lucide-react';
 import { Button } from '#/components/ui/Button';
@@ -8,12 +8,14 @@ import { personalInfo } from '#/utils/constants';
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            setIsVisible(true);
             entry.target.classList.add('animate-fade-in-up');
           }
         });
@@ -48,7 +50,7 @@ const Hero = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-blue-300/10 to-purple-300/10 rounded-full blur-3xl animate-pulse" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container mx-auto px-4 mb-6 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-5xl mx-auto">
           {/* Avatar */}
           <div className="mb-8 relative">
@@ -141,16 +143,6 @@ const Hero = () => {
               <Mail className="h-6 w-6" />
             </a>
           </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <button
-            onClick={scrollToNext}
-            className="p-3 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl"
-          >
-            <ArrowDown className="h-6 w-6" />
-          </button>
         </div>
       </div>
 

@@ -9,6 +9,9 @@ export interface Project {
   featured?: boolean;
   descriptionLong?: string;
   gallery?: string[];
+  company?: string;
+  role?: string;
+  duration?: string;
 }
 
 export interface Skill {
@@ -34,6 +37,7 @@ export interface ContactInfo {
   linkedin: string;
   github: string;
   website: string;
+  whatsapp?: string;
 }
 
 export interface PersonalInfo {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { Button } from '#/components/ui/Button';
 import { cn } from '#/utils/cn';
@@ -9,6 +9,8 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +18,11 @@ const Header = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // Header animation on load
+    setIsVisible(true);
   }, []);
 
   useEffect(() => {
@@ -73,24 +80,31 @@ const Header = () => {
   return (
     <>
       <header
+        ref={headerRef}
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out",
           scrolled
             ? "bg-white/80 backdrop-blur-md shadow-lg dark:bg-gray-900/80"
-            : "bg-transparent"
-        , isMenuOpen && "pointer-events-none")}
+            : "bg-transparent",
+          isMenuOpen && "pointer-events-none",
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
+        )}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="flex-shrink-0">
+            <div className={`flex-shrink-0 transition-all duration-600 ease-out delay-200 ${
+              isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
+            }`}>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Aryandi
               </h1>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className={`hidden md:flex items-center space-x-8 transition-all duration-600 ease-out delay-300 ${
+              isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
+            }`}>
               {navItems.map((item) => (
                 <button
                   key={item.name}
@@ -103,7 +117,9 @@ const Header = () => {
             </nav>
 
             {/* Right side buttons */}
-            <div className="flex items-center space-x-4">
+            <div className={`flex items-center space-x-4 transition-all duration-600 ease-out delay-400 ${
+              isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
+            }`}>
               {/* Dark mode toggle - hidden when drawer open to avoid overlap with close */}
               {!isMenuOpen && (
                 <Button

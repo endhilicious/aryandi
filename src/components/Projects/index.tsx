@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { ExternalLink, Github, X, Eye } from 'lucide-react';
+import { ExternalLink, Github, X, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/Card';
 import { Button } from '#/components/ui/Button';
 import { projects } from '#/utils/constants';
@@ -11,12 +11,43 @@ const Projects = () => {
   const projectsRef = useRef<HTMLDivElement>(null);
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  const selectedProject = activeProjectId ? projects.find(p => p.id === activeProjectId) : null;
+
+  // Handle body scroll lock when modal is open
+  useEffect(() => {
+    if (activeProjectId) {
+      // Reset image index when opening modal
+      setCurrentImageIndex(0);
+      // Disable body scroll
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = '0px';
+      // Trigger modal animation after state update
+      setTimeout(() => setIsModalOpen(true), 10);
+    } else {
+      // Re-enable body scroll
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px';
+      setIsModalOpen(false);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px';
+    };
+  }, [activeProjectId]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            setIsVisible(true);
             entry.target.classList.add('animate-fade-in-up');
           }
         });
@@ -30,6 +61,25 @@ const Projects = () => {
 
     return () => observer.disconnect();
   }, []);
+
+  // Handle keyboard navigation for carousel
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!activeProjectId || !selectedProject?.gallery || selectedProject.gallery.length <= 1) return;
+      
+      if (e.key === 'ArrowLeft') {
+        setCurrentImageIndex(prev => prev > 0 ? prev - 1 : selectedProject.gallery!.length - 1);
+      } else if (e.key === 'ArrowRight') {
+        setCurrentImageIndex(prev => prev < selectedProject.gallery!.length - 1 ? prev + 1 : 0);
+      }
+    };
+
+    if (activeProjectId) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [activeProjectId, selectedProject]);
 
   const ProjectCard = ({ project }: { project: typeof projects[0] }) => {
     const isHovered = hoveredProject === project.id;
@@ -134,11 +184,14 @@ const Projects = () => {
   };
 
   return (
-    <section id="projects" className="py-20 bg-white dark:bg-gray-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div ref={projectsRef} className="max-w-6xl mx-auto">
+    <>
+      <section id="projects" className="py-20 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div ref={projectsRef} className="max-w-6xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-16">
+          <div className={`text-center mb-16 transition-all duration-700 ease-out ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
             <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               My <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Projects</span>
             </h2>
@@ -147,25 +200,43 @@ const Projects = () => {
             </p>
           </div>
 
+          {/* Featured Projects */}
+          <div className={`mb-16 transition-all duration-800 ease-out delay-200 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
+              Featured Projects
+            </h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {projects.filter(p => p.featured).map((project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </div>
+          </div>
+
           {/* All Projects */}
-          <div className="mb-16">
+          <div className={`mb-16 transition-all duration-800 ease-out delay-400 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
               All Projects
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {projects.slice(0, 6).map((project) => (
+              {(showAll ? projects : projects.slice(0, 6)).map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>
-            <div className="mt-10 text-center">
-              <Button
-                variant="outline"
-                onClick={() => window.alert('View more coming soon')}
-                className="px-8 py-3"
-              >
-                View More
-              </Button>
-            </div>
+            {projects.length > 6 && (
+              <div className="mt-10 text-center">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAll(!showAll)}
+                  className="px-8 py-3"
+                >
+                  {showAll ? 'Show Less' : `View More (${projects.length - 6} more)`}
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* GitHub Stats */}
@@ -241,40 +312,357 @@ const Projects = () => {
             </Card>
           </div>
 
-          {/* Fullscreen Modal for project details */}
-          {activeProjectId && (
-            <div className="fixed inset-0 z-[90]">
-              <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setActiveProjectId(null)} />
-              <div className="fixed inset-0 overflow-y-auto">
-                <div className="min-h-full p-4 sm:p-8 flex items-start justify-center">
-                  <div className="w-full max-w-5xl bg-white dark:bg-gray-950 rounded-2xl shadow-2xl ring-1 ring-gray-200/50 dark:ring-gray-800/60">
-                    <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-800 sticky top-0 bg-white/90 dark:bg-gray-950/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-gray-950/60">
-                      <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100">{projects.find(p => p.id === activeProjectId)?.title}</h4>
-                      <Button variant="ghost" size="sm" onClick={() => setActiveProjectId(null)} className="p-2">
-                        <X className="h-6 w-6" />
-                      </Button>
+          {/* Project Detail Modal - Rendered outside section to avoid z-index conflicts */}
+          {activeProjectId && (() => {
+            const selectedProject = projects.find(p => p.id === activeProjectId);
+            
+            return (
+              <div 
+                className="fixed inset-0 z-[999999] flex items-center justify-center"
+                style={{ 
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: '100vw',
+                  height: '100vh',
+                  zIndex: 999999,
+                  padding: '20px'
+                }}
+              >
+                {/* Full screen backdrop */}
+                <div 
+                  className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
+                  onClick={() => setActiveProjectId(null)} 
+                  style={{ 
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    width: '100%',
+                    height: '100%',
+                    zIndex: 999999
+                  }}
+                />
+                
+                {/* Modal Container */}
+                <div 
+                  className="relative bg-white dark:bg-gray-900 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl" 
+                  style={{ 
+                    position: 'relative',
+                    zIndex: 1000000,
+                    maxHeight: '90vh'
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Close Button - Sticky at top */}
+                  <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 p-4 border-b border-gray-200 dark:border-gray-700 flex justify-end">
+                    <button
+                      onClick={() => setActiveProjectId(null)}
+                      className="w-8 h-8 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full flex items-center justify-center transition-all duration-300 shadow-md"
+                    >
+                      <X className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                    </button>
+                  </div>
+
+                  {/* Modal Content - Scrollable */}
+                  <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 80px)' }}>
+                    {/* Project Image */}
+                    <div className="relative h-64 sm:h-80 rounded-2xl overflow-hidden mb-6">
+                      <Image
+                        src={selectedProject?.image || '/images/Picture.png'}
+                        alt={selectedProject?.title || 'Project'}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                     </div>
-                    <div className="p-4 sm:p-6 space-y-6">
-                      <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                        {projects.find(p => p.id === activeProjectId)?.descriptionLong || projects.find(p => p.id === activeProjectId)?.description}
-                      </p>
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        {(projects.find(p => p.id === activeProjectId)?.gallery || [projects.find(p => p.id === activeProjectId)?.image]).filter(Boolean).map((src, idx) => (
-                          <div key={String(src)+idx} className="relative w-full h-56 sm:h-64 rounded-lg overflow-hidden">
-                            <Image src={src as string} alt="Project snapshot" fill className="object-cover" />
+
+                    {/* Content */}
+                    <div className="space-y-6">
+                      {/* Title and Description */}
+                      <div>
+                        <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-gray-100 mb-4">
+                          {selectedProject?.title}
+                        </h2>
+                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
+                          {selectedProject?.descriptionLong || selectedProject?.description}
+                        </p>
+                      </div>
+
+                      {/* Technologies */}
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Technologies Used</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedProject?.technologies.map((tech, index) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Project Images Gallery */}
+                      {(selectedProject?.gallery || []).length > 0 && (
+                        <div>
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Project Gallery</h3>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {selectedProject?.gallery?.map((src, idx) => (
+                              <div key={idx} className="relative w-full h-48 rounded-lg overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700">
+                                <Image 
+                                  src={src as string} 
+                                  alt="Project snapshot" 
+                                  fill 
+                                  className="object-cover hover:scale-105 transition-transform duration-300" 
+                                />
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                        </div>
+                      )}
+
+                      {/* Action Buttons */}
+                      <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                        {selectedProject?.liveUrl && (
+                          <Button
+                            onClick={() => window.open(selectedProject?.liveUrl, '_blank')}
+                            className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl"
+                          >
+                            <ExternalLink className="h-5 w-5" />
+                            <span>Live Demo</span>
+                          </Button>
+                        )}
+                        {selectedProject?.githubUrl && (
+                          <Button
+                            variant="outline"
+                            onClick={() => window.open(selectedProject?.githubUrl, '_blank')}
+                            className="flex-1 flex items-center justify-center space-x-2 border-2 hover:bg-gray-50 dark:hover:bg-gray-800"
+                          >
+                            <Github className="h-5 w-5" />
+                            <span>View Code</span>
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
       </div>
 
-    </section>
+        </section>
+
+        {/* Project Detail Modal - Rendered outside section to avoid z-index conflicts */}
+    {activeProjectId && (() => {
+      const selectedProject = projects.find(p => p.id === activeProjectId);
+      
+      return (
+        <div 
+          className={`fixed inset-0 z-[999999] flex items-center justify-center transition-all duration-300 ease-out ${
+            isModalOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{ 
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 999999,
+            padding: '20px'
+          }}
+        >
+          {/* Full screen backdrop */}
+          <div 
+            className={`absolute inset-0 bg-black/80 backdrop-blur-sm transition-all duration-300 ease-out ${
+              isModalOpen ? 'opacity-100' : 'opacity-0'
+            }`}
+            onClick={() => setActiveProjectId(null)} 
+            style={{ 
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              width: '100%',
+              height: '100%',
+              zIndex: 999999
+            }}
+          />
+          
+          {/* Modal Container */}
+          <div 
+            className={`relative bg-white dark:bg-gray-900 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl transition-all duration-500 ease-out transform ${
+              isModalOpen 
+                ? 'opacity-100 scale-100 translate-y-0' 
+                : 'opacity-0 scale-75 translate-y-8'
+            }`}
+            style={{ 
+              position: 'relative',
+              zIndex: 1000000,
+              maxHeight: '90vh',
+              transformOrigin: 'center center'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button - Sticky at top */}
+            <div className={`sticky top-0 z-10 bg-white dark:bg-gray-900 p-4 border-b border-gray-200 dark:border-gray-700 flex justify-end transition-all duration-500 delay-200 ${
+              isModalOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            }`}>
+              <button
+                onClick={() => setActiveProjectId(null)}
+                className="w-8 h-8 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full flex items-center justify-center transition-all duration-300 shadow-md hover:scale-110"
+              >
+                <X className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+              </button>
+            </div>
+
+            {/* Modal Content - Scrollable */}
+            <div className={`p-6 overflow-y-auto transition-all duration-500 delay-300 ${
+              isModalOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            }`} style={{ maxHeight: 'calc(90vh - 80px)' }}>
+              {/* Project Image Carousel */}
+              <div className={`relative h-64 sm:h-80 rounded-2xl overflow-hidden mb-6 transition-all duration-700 delay-400 ${
+                isModalOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-8'
+              }`}>
+                {selectedProject?.gallery && selectedProject.gallery.length > 0 ? (
+                  <>
+                    <Image
+                      src={selectedProject.gallery[currentImageIndex] || selectedProject.image || '/images/Picture.png'}
+                      alt={selectedProject?.title || 'Project'}
+                      fill
+                      className="object-cover transition-transform duration-700"
+                    />
+                    {selectedProject.gallery.length > 1 && (
+                      <>
+                        <button
+                          onClick={() => setCurrentImageIndex(prev => prev > 0 ? prev - 1 : selectedProject.gallery!.length - 1)}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        >
+                          <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => setCurrentImageIndex(prev => prev < selectedProject.gallery!.length - 1 ? prev + 1 : 0)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        >
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+                          {selectedProject.gallery.map((_, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => setCurrentImageIndex(idx)}
+                              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                                idx === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <div className="absolute top-4 right-4 bg-black/50 text-white px-2 py-1 rounded text-sm">
+                          {currentImageIndex + 1} / {selectedProject.gallery!.length}
+                        </div>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <Image
+                    src={selectedProject?.image || '/images/Picture.png'}
+                    alt={selectedProject?.title || 'Project'}
+                    fill
+                    className="object-cover transition-transform duration-700"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+              </div>
+
+              {/* Content */}
+              <div className={`space-y-6 transition-all duration-600 delay-500 ${
+                isModalOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+              }`}>
+                {/* Title and Description */}
+                <div>
+                  <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-gray-100 mb-4">
+                    {selectedProject?.title}
+                  </h2>
+                  {(selectedProject?.company || selectedProject?.role || selectedProject?.duration) && (
+                    <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                      {selectedProject?.company && (
+                        <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-1">
+                          Company: {selectedProject.company}
+                        </p>
+                      )}
+                      {selectedProject?.role && (
+                        <p className="text-sm font-semibold text-purple-600 dark:text-purple-400 mb-1">
+                          Role: {selectedProject.role}
+                        </p>
+                      )}
+                      {selectedProject?.duration && (
+                        <p className="text-sm font-semibold text-green-600 dark:text-green-400">
+                          Duration: {selectedProject.duration}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
+                    {selectedProject?.descriptionLong || selectedProject?.description}
+                  </p>
+                </div>
+
+                {/* Technologies */}
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Technologies Used</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProject?.technologies.map((tech, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+
+                {/* Action Buttons */}
+                <div className={`flex flex-col sm:flex-row gap-4 pt-4 transition-all duration-500 delay-700 ${
+                  isModalOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}>
+                  {selectedProject?.liveUrl && (
+                    <Button
+                      onClick={() => window.open(selectedProject?.liveUrl, '_blank')}
+                      className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl"
+                    >
+                      <ExternalLink className="h-5 w-5" />
+                      <span>Live Demo</span>
+                    </Button>
+                  )}
+                  {selectedProject?.githubUrl && (
+                    <Button
+                      variant="outline"
+                      onClick={() => window.open(selectedProject?.githubUrl, '_blank')}
+                      className="flex-1 flex items-center justify-center space-x-2 border-2 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
+                      <Github className="h-5 w-5" />
+                      <span>View Code</span>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })()}
+    </>
   );
 };
 

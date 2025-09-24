@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Target, Handshake, BookOpen } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/Card';
@@ -8,12 +8,14 @@ import { specializingIn } from '#/utils/constants';
 
 const Skills = () => {
   const skillsRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            setIsVisible(true);
             entry.target.classList.add('animate-fade-in-up');
           }
         });
@@ -34,15 +36,52 @@ const Skills = () => {
     <section id="skills" className="py-20 bg-gray-50 dark:bg-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div ref={skillsRef} className="max-w-6xl mx-auto">
+          <style jsx>{`
+            :root {
+              --javascript-color: #f7df1e;
+              --html-css-color: #e34f26;
+              --nextjs-color: #000000;
+              --typescript-color: #3178c6;
+              --ionic-color: #3880ff;
+              --redux-color: #764abc;
+              --storybook-color: #ff4785;
+              --gatsby-color: #663399;
+              --react-testing-library-color: #e33332;
+              --react-native-color: #61dafb;
+              --react-query-color: #ff4154;
+              --material-ui-color: #0081cb;
+              --react-color: #61dafb;
+              --graphql-color: #e10098;
+              --jest-color: #c21325;
+              --figma-color: #f24e1e;
+              --tailwind-color: #06b6d4;
+              --bootstrap-color: #7952b3;
+              --jquery-color: #0769ad;
+              --firebase-color: #ffca28;
+              --supabase-color: #3ecf8e;
+              --mysql-color: #4479a1;
+              --codeigniter-color: #ee4323;
+              --aws-color: #ff9900;
+              --docker-color: #2496ed;
+              --jira-color: #0052cc;
+              --semantic-html-color: #e34f26;
+              --vue-color: #4fc08d;
+              --trello-color: #0079bf;
+            }
+          `}</style>
           {/* Specializing In */}
           <div className="mt-20">
-            <div className="text-center mb-10">
+            <div className={`text-center mb-10 transition-all duration-700 ease-out ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}>
               <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100">
                 Specializing <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">In</span>
               </h3>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 transition-all duration-800 ease-out delay-200 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}>
               {specializingIn.map((label) => {
                 const colorMap: Record<string, string> = {
                   Javascript: 'from-yellow-300 to-yellow-500',
@@ -78,50 +117,75 @@ const Skills = () => {
                 const gradient = colorMap[label] || 'from-slate-400 to-slate-600';
                 const iconMap: Record<string, string> = {
                   Javascript: '/images/js.png',
-                  'HTML CSS': '/images/image103.png',
-                  Nextjs: '/images/image103.png',
-                  Typescript: '/images/image103.png',
-                  Ionic: '/images/image103.png',
-                  Redux: '/images/image103.png',
-                  Storybook: '/images/image103.png',
-                  Gatsby: '/images/image103.png',
-                  'React Testing Library': '/images/image103.png',
-                  'React Native': '/images/image103.png',
-                  'React Query': '/images/image103.png',
-                  'Material UI': '/images/image103.png',
-                  React: '/images/image103.png',
-                  GraphQL: '/images/image103.png',
-                  Jest: '/images/image103.png',
-                  Figma: '/images/image103.png',
-                  Tailwind: '/images/image103.png',
-                  Bootstrap: '/images/image103.png',
-                  Jquery: '/images/image103.png',
-                  Firebase: '/images/image103.png',
-                  Supabase: '/images/image103.png',
-                  MySQL: '/images/image103.png',
-                  Codeigniter: '/images/image103.png',
-                  AWS: '/images/image103.png',
-                  Docker: '/images/image103.png',
-                  Jira: '/images/image103.png',
-                  'Semantic HTML': '/images/image103.png',
-                  Vue: '/images/image103.png',
-                  Trello: '/images/image103.png'
+                  'HTML CSS': '/images/html-css.png',
+                  Nextjs: '/images/nextjs.png',
+                  Typescript: '/images/typescript.png',
+                  Ionic: '/images/ionic.png',
+                  Redux: '/images/redux.png',
+                  Storybook: '/images/storybook.png',
+                  Gatsby: '/images/gatsby.png',
+                  'React Testing Library': '/images/react-testing-library.png',
+                  'React Native': '/images/react-native.png',
+                  'React Query': '/images/react-query.png',
+                  'Material UI': '/images/material-ui.png',
+                  React: '/images/react.png',
+                  GraphQL: '/images/react-query.png', // Using react-query as placeholder
+                  Jest: '/images/jest.png',
+                  Figma: '/images/figma.png',
+                  Tailwind: '/images/tail.png',
+                  Bootstrap: '/images/bootstrap.png',
+                  Jquery: '/images/js.png', // Using js as placeholder
+                  Firebase: '/images/firebase.png',
+                  Supabase: '/images/suppabase.png',
+                  MySQL: '/images/mysql.png',
+                  Codeigniter: '/images/png-clipart-logo-orange-s-a-codeigniter-logo-orange-sa%201.png',
+                  AWS: '/images/aws.png',
+                  Docker: '/images/docker.png',
+                  Jira: '/images/jira.png',
+                  'Semantic HTML': '/images/html-css.png',
+                  Vue: '/images/vue.png',
+                  Trello: '/images/trello.png'
                 };
                 const iconSrc = iconMap[label] || '/images/image103.png';
                 return (
-                  <div key={label} className="group relative rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 text-center shadow-sm hover:shadow-xl transition-all overflow-hidden">
-                    {/* glare sweep */}
-                    <div aria-hidden className="pointer-events-none absolute -inset-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="absolute -left-1/2 top-1/2 h-24 w-[140%] -translate-y-1/2 -rotate-12 bg-gradient-to-r from-white/0 via-white/30 to-white/0 group-hover:translate-x-[120%] translate-x-[-120%] transition-transform duration-700 ease-out" />
+                  <div key={label} className="group relative rounded-2xl border-2 border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden hover:scale-105 hover:-translate-y-2">
+                    {/* Animated border on hover */}
+                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} style={{ padding: '2px' }}>
+                      <div className="w-full h-full rounded-2xl bg-white dark:bg-gray-800"></div>
                     </div>
-                    {/* icon */}
-                    <div className={`mx-auto mb-3 h-10 w-10 rounded bg-gradient-to-br ${gradient} grid place-items-center overflow-hidden`}> 
-                      <div className="relative h-7 w-7 transition-transform duration-300 ease-out group-hover:scale-110">
-                        <Image src={iconSrc} alt={`${label} logo`} fill className="object-contain" />
+                    
+                    {/* Subtle glow effect */}
+                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 blur-xl transition-opacity duration-500`}></div>
+                    
+                    {/* Content */}
+                    <div className="relative z-10">
+                      {/* Icon with glassmorphism effect */}
+                      <div className={`mx-auto mb-4 h-20 w-20 rounded-2xl border-2 bg-white/20 dark:bg-gray-300/30 backdrop-blur-md grid place-items-center overflow-hidden transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-inner`} 
+                           style={{ 
+                             borderColor: `var(--${label.toLowerCase().replace(/\s+/g, '-')}-color)`,
+                             boxShadow: `0 0 20px var(--${label.toLowerCase().replace(/\s+/g, '-')}-color)20`
+                           }}>
+                        <div className="relative h-12 w-12 transition-transform duration-300 ease-out">
+                          <Image 
+                            src={iconSrc} 
+                            alt={`${label} logo`} 
+                            fill 
+                            className="object-contain drop-shadow-lg" 
+                            style={{ 
+                              filter: 'brightness(1.2) contrast(1.1) saturate(1.1)',
+                              transition: 'all 0.3s ease'
+                            }}
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div className={`rounded bg-gradient-to-b ${gradient} text-white text-sm font-semibold px-3 py-1 inline-block`}> 
-                      {label}
+                      
+                      {/* Label with gradient text and better typography */}
+                      <div className={`bg-gradient-to-r ${gradient} bg-clip-text text-transparent text-sm font-bold tracking-wide`}> 
+                        {label}
+                      </div>
+                      
+                      {/* Subtle tech indicator */}
+                      <div className="mt-2 h-1 w-8 mx-auto rounded-full bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
                   </div>
                 );
