@@ -10,7 +10,6 @@ import { preloadImages } from '#/utils/imageOptimization';
 
 const Projects = () => {
   const projectsRef = useRef<HTMLDivElement>(null);
-  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -102,25 +101,26 @@ const Projects = () => {
   }, [activeProjectId, selectedProject, currentImageIndex, changeImage]);
 
   const ProjectCard = ({ project }: { project: typeof projects[0] }) => {
-    const isHovered = hoveredProject === project.id;
+    const [isCardHovered, setIsCardHovered] = useState(false);
     
     return (
       <Card
         className={`group relative overflow-hidden transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl ${
           project.featured ? 'ring-2 ring-blue-500/20' : ''
         }`}
-        onMouseEnter={() => setHoveredProject(project.id)}
-        onMouseLeave={() => setHoveredProject(null)}
+        onMouseEnter={() => setIsCardHovered(true)}
+        onMouseLeave={() => setIsCardHovered(false)}
         onClick={() => setActiveProjectId(project.id)}
       >
         {/* Project Image */}
-        <div className="relative h-48 overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
           <ProjectImage
             src={(project.gallery && project.gallery[0] ? (project.gallery[0] as string) : project.image) || '/images/Picture.png'}
             alt={project.title}
-            width={600}
-            height={400}
-            className="w-full h-full"
+            fill
+            className={`object-cover transition-transform duration-300 ${
+              isCardHovered ? 'scale-105' : 'scale-100'
+            }`}
           />
 
           {/* Gallery count badge */}
@@ -132,7 +132,7 @@ const Projects = () => {
           
           {/* Overlay */}
           <div className={`absolute inset-0 bg-black/60 flex items-center justify-center space-x-4 transition-opacity duration-300 ${
-            isHovered ? 'opacity-100' : 'opacity-0'
+            isCardHovered ? 'opacity-100' : 'opacity-0'
           }`}>
             {project.liveUrl && (
               <Button

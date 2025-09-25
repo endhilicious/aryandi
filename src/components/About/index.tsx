@@ -108,7 +108,7 @@ const About = () => {
               About <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Me</span>
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              I&apos;m a passionate developer who loves creating amazing digital experiences
+              I build reliable, user‑centered products and intentionally use AI to work faster and smarter.
             </p>
           </div>
 
@@ -158,8 +158,7 @@ const About = () => {
                   {personalInfo.bio}
                 </p>
                 <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                  I specialize in building modern, responsive web applications using cutting-edge technologies. 
-                  My goal is to create solutions that not only meet requirements but exceed expectations.
+                  I combine strong fundamentals (TypeScript, React, testing) with AI‑assisted workflows: clear prompting, code reviews, knowledge retrieval, and automation to reduce cycle time while maintaining quality.
                 </p>
               </div>
             </div>

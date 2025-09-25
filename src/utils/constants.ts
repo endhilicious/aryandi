@@ -2,8 +2,8 @@ import { Project, Skill, Experience, PersonalInfo } from '#/types';
 
 export const personalInfo: PersonalInfo = {
   name: "Muh. Aryandi",
-  title: "Frontend Lead Engineer",
-  bio: "I'm a passionate Frontend Engineer with a strong background in programming and deep enthusiasm for the fundamentals of JavaScript and TypeScript. I specialize in HTML/CSS slicing, have solid UI/UX sensibilities (Figma), and build with React, Next.js, Gatsby, and Storybook. I care deeply about quality and reliability, using Jest, Mocha, and RTL to ensure robust components. I enjoy leading, mentoring, and collaborating across teams, including in remote environments.",
+  title: "Senior Frontend Engineer",
+  bio: "I'm a passionate Frontend Engineer with a strong background in programming and deep enthusiasm for the fundamentals of JavaScript and TypeScript. I specialize in HTML/CSS slicing, have solid UI/UX sensibilities (Figma), and build with React, Next.js, Gatsby, and Storybook. I care deeply about quality and reliability, using Jest, Mocha, and RTL to ensure robust components. Beyond core engineering skills, I actively leverage AI to increase productivity: I write precise, goal‑oriented prompts, automate repetitive tasks, and integrate AI into my daily workflow to accelerate delivery and solve both technical and non‑technical problems. I enjoy leading, mentoring, and collaborating across teams, including in remote environments.",
   avatar: "/images/Aryandi-photo1.png",
   contact: {
     email: "muhammadaryandi90@gmail.com",
@@ -392,13 +392,14 @@ export const experiences: Experience[] = [
 ];
 
 export const specializingIn: string[] = [
-  // Row 1
+  // Row 1,
+  "Prompt Engineering",
   "Javascript",
   "HTML CSS",
   "Nextjs",
   "Typescript",
-  "Ionic",
   // Row 2
+  "Ionic",
   "Redux",
   "Storybook",
   "Gatsby",

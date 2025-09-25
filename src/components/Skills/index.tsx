@@ -112,7 +112,8 @@ const Skills = () => {
                   Jira: 'from-blue-500 to-blue-700',
                   'Semantic HTML': 'from-orange-400 to-amber-600',
                   Vue: 'from-emerald-400 to-green-600',
-                  Trello: 'from-sky-400 to-sky-600'
+                  Trello: 'from-sky-400 to-sky-600',
+                  'Prompt Engineering': 'from-fuchsia-500 to-purple-700'
                 };
                 const gradient = colorMap[label] || 'from-slate-400 to-slate-600';
                 const iconMap: Record<string, string> = {
@@ -144,7 +145,8 @@ const Skills = () => {
                   Jira: '/images/jira.png',
                   'Semantic HTML': '/images/html-css.png',
                   Vue: '/images/vue.png',
-                  Trello: '/images/trello.png'
+                  Trello: '/images/trello.png',
+                  'Prompt Engineering': '/images/prompt.png'
                 };
                 const iconSrc = iconMap[label] || '/images/image103.png';
                 return (
