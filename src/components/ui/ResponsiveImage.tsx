@@ -76,8 +76,10 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
     });
   };
 
+  const wrapperClass = fill ? 'absolute inset-0' : 'relative';
+
   return (
-    <div className={`relative ${className}`}>
+    <div className={wrapperClass}>
       {/* Loading state overlay */}
       {showLoadingState && loadingState.isLoading && (
         <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-lg flex items-center justify-center">
@@ -100,7 +102,7 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
         priority={shouldPrioritize}
         placeholder="blur"
         blurDataURL={blurDataURL}
-        onLoad={handleLoad}
+        onLoadingComplete={handleLoad}
         onError={handleError}
         className={`transition-opacity duration-300 ${
           loadingState.isLoaded ? 'opacity-100' : 'opacity-0'
