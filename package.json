@@ -9,7 +9,9 @@
     "lint": "eslint",
     "export": "next build && next export",
     "export:docs": "next build && rm -rf docs && mkdir -p docs && cp -R out/* docs/ && touch docs/.nojekyll",
-    "export:docs:cname": "DOMAIN=${PAGES_DOMAIN:-} && next build && rm -rf docs && mkdir -p docs && cp -R out/* docs/ && touch docs/.nojekyll && if [ -n \"$DOMAIN\" ]; then echo $DOMAIN > docs/CNAME; fi"
+    "export:docs:cname": "DOMAIN=${PAGES_DOMAIN:-} && next build && rm -rf docs && mkdir -p docs && touch docs/.nojekyll && if [ -n \"$DOMAIN\" ]; then echo $DOMAIN > docs/CNAME; fi",
+    "optimize-images": "node scripts/optimize-images.js",
+    "build:optimized": "npm run optimize-images && npm run build"
   },
   "dependencies": {
     "clsx": "^2.1.1",

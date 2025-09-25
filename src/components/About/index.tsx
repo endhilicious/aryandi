@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import { Code, Users, Award, Coffee } from 'lucide-react';
 import { Card, CardContent } from '#/components/ui/Card';
+import { AvatarImage } from '#/components/ui/ResponsiveImage';
 import { personalInfo, experiences, teaching, organizations, speakerActivities, certificationsDetailed, honorsAwards } from '#/utils/constants';
 
 const About = () => {
@@ -136,7 +136,7 @@ const About = () => {
                 
                 {/* Main image container */}
                 <div className="relative w-full h-64 sm:h-72 backdrop-blur-[1px] flex items-center justify-center z-10">
-                  <Image
+                  <AvatarImage
                     src={personalInfo.avatar}
                     alt={personalInfo.name}
                     width={300}

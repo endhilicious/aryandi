@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import Image from 'next/image';
 import { ExternalLink, Github, X, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/Card';
 import { Button } from '#/components/ui/Button';
+import { ProjectImage, GalleryImage } from '#/components/ui/ResponsiveImage';
 import { projects } from '#/utils/constants';
+import { preloadImages } from '#/utils/imageOptimization';
 
 const Projects = () => {
   const projectsRef = useRef<HTMLDivElement>(null);
@@ -56,6 +57,13 @@ const Projects = () => {
   }, [activeProjectId]);
 
   useEffect(() => {
+    // Preload first few project images for better performance
+    const featuredProjects = projects.slice(0, 3);
+    const imagesToPreload = featuredProjects.map(project => 
+      (project.gallery && project.gallery[0] ? (project.gallery[0] as string) : project.image) || '/images/Picture.png'
+    );
+    preloadImages(imagesToPreload);
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -107,12 +115,12 @@ const Projects = () => {
       >
         {/* Project Image */}
         <div className="relative h-48 overflow-hidden">
-          <Image
+          <ProjectImage
             src={(project.gallery && project.gallery[0] ? (project.gallery[0] as string) : project.image) || '/images/Picture.png'}
             alt={project.title}
             width={600}
             height={400}
-            className="w-full h-full object-cover"
+            className="w-full h-full"
           />
 
           {/* Gallery count badge */}
@@ -373,7 +381,7 @@ const Projects = () => {
                   <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 80px)' }}>
                     {/* Project Image */}
                     <div className="relative h-64 sm:h-80 rounded-2xl overflow-hidden mb-6">
-                      <Image
+                      <GalleryImage
                         src={selectedProject?.image || '/images/Picture.png'}
                         alt={selectedProject?.title || 'Project'}
                         fill
@@ -416,7 +424,7 @@ const Projects = () => {
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {selectedProject?.gallery?.map((src, idx) => (
                               <div key={idx} className="relative w-full h-48 rounded-lg overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700">
-                                <Image 
+                                <GalleryImage 
                                   src={src as string} 
                                   alt="Project snapshot" 
                                   fill 
@@ -538,7 +546,7 @@ const Projects = () => {
                 {selectedProject?.gallery && selectedProject.gallery.length > 0 ? (
                   <>
                     {/* Current and next images for smooth crossfade */}
-                    <Image
+                    <GalleryImage
                       key={`current-${currentImageIndex}`}
                       src={selectedProject.gallery[currentImageIndex] || selectedProject.image || '/images/Picture.png'}
                       alt={selectedProject?.title || 'Project'}
@@ -546,14 +554,15 @@ const Projects = () => {
                       className={`object-cover transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
                     />
                     {nextImageIndex !== null && (
-                      <Image
+                      <GalleryImage
                         key={`next-${nextImageIndex}`}
                         src={selectedProject.gallery[nextImageIndex] || selectedProject.image || '/images/Picture.png'}
                         alt={selectedProject?.title || 'Project next'}
                         fill
                         className={`object-cover transition-opacity duration-300 ${isNextLoaded ? 'opacity-100' : 'opacity-0'}`}
-                        onLoadingComplete={() => {
+                        onLoad={() => {
                           // start crossfade only after next visual is loaded
+                          setIsNextLoaded(true);
                           setIsTransitioning(true);
                           // finish after the fade duration
                           window.setTimeout(() => {
@@ -563,7 +572,6 @@ const Projects = () => {
                             setIsNextLoaded(false);
                           }, 300);
                         }}
-                        onLoad={() => setIsNextLoaded(true)}
                       />
                     )}
                     {selectedProject.gallery.length > 1 && (
@@ -598,7 +606,7 @@ const Projects = () => {
                     )}
                   </>
                 ) : (
-                  <Image
+                  <GalleryImage
                     src={selectedProject?.image || '/images/Picture.png'}
                     alt={selectedProject?.title || 'Project'}
                     fill
@@ -620,7 +628,7 @@ const Projects = () => {
                       }`}
                       aria-label={`Open image ${tIdx + 1}`}
                     >
-                      <Image src={thumbSrc as string} alt="thumbnail" fill className="object-cover" />
+                      <GalleryImage src={thumbSrc as string} alt="thumbnail" fill className="object-cover" />
                     </button>
                   ))}
                 </div>

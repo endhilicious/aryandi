@@ -55,6 +55,8 @@ export default function RootLayout({
             `,
           }}
         />
+        {/* Preload critical avatar image */}
+        <link rel="preload" as="image" href="/images/Aryandi-photo1.png" fetchPriority="high" />
         {children}
       </body>
     </html>

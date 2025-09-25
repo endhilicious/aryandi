@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import { Target, Handshake, BookOpen } from 'lucide-react';
 import { Card, CardContent } from '#/components/ui/Card';
+import { IconImage } from '#/components/ui/ResponsiveImage';
 import { specializingIn } from '#/utils/constants';
 
 const Skills = () => {
@@ -86,7 +86,7 @@ const Skills = () => {
                 const colorMap: Record<string, string> = {
                   Javascript: 'from-yellow-300 to-yellow-500',
                   'HTML CSS': 'from-orange-400 to-pink-500',
-                  Nextjs: 'from-gray-700 to-black',
+                  Nextjs: 'from-gray-400 to-gray-600',
                   Typescript: 'from-blue-500 to-blue-700',
                   Ionic: 'from-indigo-400 to-indigo-600',
                   Redux: 'from-purple-500 to-purple-700',
@@ -166,10 +166,11 @@ const Skills = () => {
                              boxShadow: `0 0 20px var(--${label.toLowerCase().replace(/\s+/g, '-')}-color)20`
                            }}>
                         <div className="relative h-12 w-12 transition-transform duration-300 ease-out">
-                          <Image 
+                          <IconImage 
                             src={iconSrc} 
                             alt={`${label} logo`} 
-                            fill 
+                            width={48}
+                            height={48}
                             className={`object-contain drop-shadow-lg ${label === 'Nextjs' ? 'dark:invert-0' : ''}`} 
                             style={{ 
                               filter: 'brightness(1.2) contrast(1.1) saturate(1.1)',
@@ -180,7 +181,11 @@ const Skills = () => {
                       </div>
                       
                       {/* Label with gradient text and better typography */}
-                      <div className={`bg-gradient-to-r ${gradient} bg-clip-text text-transparent text-sm font-bold tracking-wide`}> 
+                      <div className={`${
+                        label === 'Nextjs' 
+                          ? 'text-gray-900 dark:text-white text-sm font-bold tracking-wide'
+                          : `bg-gradient-to-r ${gradient} bg-clip-text text-transparent text-sm font-bold tracking-wide`
+                      }`}> 
                         {label}
                       </div>
                       

@@ -1,21 +1,23 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
-import { ArrowDown, Github, Linkedin, Mail, MapPin } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { Github, Linkedin, Mail, MapPin } from 'lucide-react';
 import { Button } from '#/components/ui/Button';
+import { AvatarImage } from '#/components/ui/ResponsiveImage';
 import { personalInfo } from '#/utils/constants';
+import { preloadImage } from '#/utils/imageOptimization';
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // Preload critical avatar image
+    preloadImage(personalInfo.avatar, true);
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setIsVisible(true);
             entry.target.classList.add('animate-fade-in-up');
           }
         });
@@ -30,12 +32,6 @@ const Hero = () => {
     return () => observer.disconnect();
   }, []);
 
-  const scrollToNext = () => {
-    const aboutSection = document.querySelector('#about');
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <section
@@ -57,13 +53,14 @@ const Hero = () => {
             <div className="inline-block relative">
               <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1 animate-pulse">
                 <div className="w-full h-full rounded-full overflow-hidden">
-                  <Image
+                  <AvatarImage
                     src={personalInfo.avatar}
                     alt={personalInfo.name}
                     width={160}
                     height={160}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full"
                     priority
+                    showLoadingState={true}
                   />
                 </div>
               </div>
