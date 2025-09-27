@@ -11,6 +11,24 @@ const About = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
 
+  // Fallback to ensure About section is always visible after component mounts
+  useEffect(() => {
+    // Mobile-specific: show About section immediately
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      setIsVisible(true);
+      return;
+    }
+
+    const fallbackTimer = setTimeout(() => {
+      if (!isVisible) {
+        setIsVisible(true);
+      }
+    }, 1000); // 1 second fallback
+
+    return () => clearTimeout(fallbackTimer);
+  }, [isVisible]);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -21,7 +39,10 @@ const About = () => {
           }
         });
       },
-      { threshold: 0.1 }
+      { 
+        threshold: 0.05, // Lower threshold for mobile
+        rootMargin: '0px 0px -50px 0px' // Ensure it triggers before fully visible on mobile
+      }
     );
 
     if (aboutRef.current) {
@@ -31,31 +52,73 @@ const About = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Timeline items observer
+  // Timeline items observer - only run when about section is visible
   useEffect(() => {
-    const timelineItems = document.querySelectorAll('.timeline-item');
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = parseInt(entry.target.getAttribute('data-index') || '0');
-            // Add delay based on index for staggered animation
-            setTimeout(() => {
-              setVisibleItems(prev => new Set([...prev, index]));
-            }, index * 200);
+    if (!isVisible) return;
+
+    // Mobile-specific: show all timeline items immediately
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      setVisibleItems(new Set(Array.from({ length: experiences.length }, (_, i) => i)));
+      return;
+    }
+
+    // Add a small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      const timelineItems = document.querySelectorAll('.timeline-item');
+      if (timelineItems.length === 0) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const index = parseInt(entry.target.getAttribute('data-index') || '0');
+              // Add delay based on index for staggered animation
+              setTimeout(() => {
+                setVisibleItems(prev => new Set([...prev, index]));
+              }, index * 100); // Reduced delay for mobile
+            }
+          });
+        },
+        { 
+          threshold: 0.1, // Lower threshold for mobile
+          rootMargin: '0px 0px -10px 0px' // Less restrictive margin for mobile
+        }
+      );
+
+      timelineItems.forEach(item => observer.observe(item));
+
+      // Fallback: if no items become visible after 2 seconds, show all
+      const fallbackTimer = setTimeout(() => {
+        if (visibleItems.size === 0) {
+          setVisibleItems(new Set(Array.from({ length: experiences.length }, (_, i) => i)));
+        }
+      }, 2000);
+
+      // Mobile-specific fallback: show all items immediately on mobile if viewport is small
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        const mobileFallbackTimer = setTimeout(() => {
+          if (visibleItems.size === 0) {
+            setVisibleItems(new Set(Array.from({ length: experiences.length }, (_, i) => i)));
           }
-        });
-      },
-      { 
-        threshold: 0.2,
-        rootMargin: '-20px 0px -20px 0px'
+        }, 500); // Faster fallback for mobile
+        
+        return () => {
+          observer.disconnect();
+          clearTimeout(fallbackTimer);
+          clearTimeout(mobileFallbackTimer);
+        };
       }
-    );
 
-    timelineItems.forEach(item => observer.observe(item));
+      return () => {
+        observer.disconnect();
+        clearTimeout(fallbackTimer);
+      };
+    }, 100);
 
-    return () => observer.disconnect();
-  }, []);
+    return () => clearTimeout(timer);
+  }, [isVisible, visibleItems.size]); // Depend on isVisible state
 
   const stats = [
     { icon: Code, label: 'Projects Completed', value: '50+' },
@@ -65,43 +128,16 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="py-20 bg-white dark:bg-gray-900">
+    <section id="about" className="py-20 bg-white dark:bg-gray-900 md:min-h-auto md:block md:visible md:opacity-100">
       <style jsx>{`
-        .timeline-item {
-          will-change: transform, opacity;
-        }
-        .timeline-dot {
-          will-change: transform, background-color, box-shadow;
-        }
-        .timeline-content {
-          will-change: transform, opacity, box-shadow;
-        }
-        .tech-tag {
-          will-change: transform, opacity;
-        }
-        .timeline-item:hover .timeline-dot {
-          transform: scale(1.1);
-          box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-        }
-        .timeline-item:hover .timeline-content {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        .timeline-item:hover .tech-tag {
-          transform: scale(1.05);
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
-        .timeline-dot:not(.visible) {
+        .timeline-dot-pulse:not(.visible) {
           animation: pulse 2s infinite;
         }
       `}</style>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div ref={aboutRef} className="max-w-6xl mx-auto">
           {/* Section Header */}
-          <div className={`text-center mb-16 transition-all duration-700 ease-out ${
+          <div className={`text-center mb-16 transition-all duration-700 ease-out md:opacity-100 md:translate-y-0 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}>
             <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
@@ -209,39 +245,36 @@ const About = () => {
                   return (
                       <div 
                         key={exp.id} 
-                        className={`timeline-item relative flex items-start space-x-6 transition-all duration-700 ease-out ${
+                        className={`timeline-item group relative flex items-start space-x-6 mb-8 md:mb-0 transition-all duration-700 ease-out md:opacity-100 md:translate-x-0 hover:transform-gpu ${
                           isVisible 
                             ? 'opacity-100 translate-x-0' 
                             : 'opacity-0 translate-x-8'
                         }`}
                         data-index={index}
                         style={{ 
-                          transitionDelay: `${index * 100}ms`,
-                          willChange: 'transform, opacity'
+                          transitionDelay: `${index * 100}ms`
                         }}
                       >
                       {/* Timeline dot */}
-                      <div className={`timeline-dot flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg relative z-10 transition-all duration-700 ease-out ${
+                      <div className={`timeline-dot timeline-dot-pulse flex-shrink-0 w-16 h-16 md:w-12 md:h-12 md:text-sm rounded-full flex items-center justify-center text-white font-bold text-lg relative z-10 transition-all duration-700 ease-out group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] ${
                         isVisible 
-                          ? 'bg-gradient-to-br from-blue-500 to-purple-600 scale-100 shadow-lg shadow-blue-500/25' 
+                          ? 'bg-gradient-to-br from-blue-500 to-purple-600 scale-100 shadow-lg shadow-blue-500/25 visible' 
                           : 'bg-gray-300 dark:bg-gray-600 scale-75'
                       }`}
                       style={{ 
-                        transitionDelay: `${index * 100 + 200}ms`,
-                        willChange: 'transform, background-color, box-shadow'
+                        transitionDelay: `${index * 100 + 200}ms`
                       }}>
                         {index + 1}
                       </div>
                       
                       {/* Content */}
-                      <Card className={`timeline-content flex-1 transition-all duration-700 ease-out ${
+                      <Card className={`timeline-content flex-1 ml-4 md:ml-0 transition-all duration-700 ease-out md:opacity-100 md:translate-y-0 group-hover:-translate-y-1 group-hover:shadow-[0_10px_25px_rgba(0,0,0,0.1)] ${
                         isVisible 
                           ? 'opacity-100 translate-y-0 shadow-lg shadow-gray-200/50 dark:shadow-gray-800/50' 
                           : 'opacity-0 translate-y-4'
                       }`}
                       style={{ 
-                        transitionDelay: `${index * 100 + 300}ms`,
-                        willChange: 'transform, opacity, box-shadow'
+                        transitionDelay: `${index * 100 + 300}ms`
                       }}>
                         <CardContent className="p-6">
                           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
@@ -262,14 +295,13 @@ const About = () => {
                             {exp.technologies.map((tech, techIndex) => (
                               <span
                                 key={tech}
-                                className={`tech-tag px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium transition-all duration-500 ease-out ${
+                                className={`tech-tag px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium transition-all duration-500 ease-out group-hover:scale-105 md:opacity-100 md:translate-y-0 ${
                                   isVisible 
                                     ? 'opacity-100 translate-y-0' 
                                     : 'opacity-0 translate-y-2'
                                 }`}
                                 style={{ 
-                                  transitionDelay: `${index * 100 + 400 + techIndex * 100}ms`,
-                                  willChange: 'transform, opacity'
+                                  transitionDelay: `${index * 100 + 400 + techIndex * 100}ms`
                                 }}
                               >
                                 {tech}

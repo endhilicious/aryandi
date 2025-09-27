@@ -37,7 +37,7 @@ const Hero = () => {
     <section
       id="home"
       ref={heroRef}
-      className="min-h-[100svh] flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-24 md:pt-28"
+      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-24 md:pt-28"
     >
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden">
